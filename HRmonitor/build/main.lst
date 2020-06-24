@@ -1,0 +1,826 @@
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.SystemClock_Config,"ax",%progbits
+  16              		.align	1
+  17              		.global	SystemClock_Config
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	SystemClock_Config:
+  24              	.LFB67:
+  25              		.file 1 "Src/main.c"
+   1:Src/main.c    **** /* USER CODE BEGIN Header */
+   2:Src/main.c    **** /**
+   3:Src/main.c    ****   ******************************************************************************
+   4:Src/main.c    ****   * @file           : main.c
+   5:Src/main.c    ****   * @brief          : Main program body
+   6:Src/main.c    ****   ******************************************************************************
+   7:Src/main.c    ****   * @attention
+   8:Src/main.c    ****   *
+   9:Src/main.c    ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  10:Src/main.c    ****   * All rights reserved.</center></h2>
+  11:Src/main.c    ****   *
+  12:Src/main.c    ****   * This software component is licensed by ST under Ultimate Liberty license
+  13:Src/main.c    ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  14:Src/main.c    ****   * the License. You may obtain a copy of the License at:
+  15:Src/main.c    ****   *                             www.st.com/SLA0044
+  16:Src/main.c    ****   *
+  17:Src/main.c    ****   ******************************************************************************
+  18:Src/main.c    ****   */
+  19:Src/main.c    **** /* USER CODE END Header */
+  20:Src/main.c    **** 
+  21:Src/main.c    **** /* Includes ------------------------------------------------------------------*/
+  22:Src/main.c    **** #include "main.h"
+  23:Src/main.c    **** #include "crc.h"
+  24:Src/main.c    **** #include "i2c.h"
+  25:Src/main.c    **** #include "tim.h"
+  26:Src/main.c    **** #include "usart.h"
+  27:Src/main.c    **** #include "usb_device.h"
+  28:Src/main.c    **** #include "gpio.h"
+  29:Src/main.c    **** 
+  30:Src/main.c    **** /* Private includes ----------------------------------------------------------*/
+  31:Src/main.c    **** /* USER CODE BEGIN Includes */
+  32:Src/main.c    **** 
+  33:Src/main.c    **** /* USER CODE END Includes */
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 2
+
+
+  34:Src/main.c    **** 
+  35:Src/main.c    **** /* Private typedef -----------------------------------------------------------*/
+  36:Src/main.c    **** /* USER CODE BEGIN PTD */
+  37:Src/main.c    **** 
+  38:Src/main.c    **** /* USER CODE END PTD */
+  39:Src/main.c    **** 
+  40:Src/main.c    **** /* Private define ------------------------------------------------------------*/
+  41:Src/main.c    **** /* USER CODE BEGIN PD */
+  42:Src/main.c    **** 
+  43:Src/main.c    **** /* USER CODE END PD */
+  44:Src/main.c    **** 
+  45:Src/main.c    **** /* Private macro -------------------------------------------------------------*/
+  46:Src/main.c    **** /* USER CODE BEGIN PM */
+  47:Src/main.c    **** 
+  48:Src/main.c    **** /* USER CODE END PM */
+  49:Src/main.c    **** 
+  50:Src/main.c    **** /* Private variables ---------------------------------------------------------*/
+  51:Src/main.c    **** 
+  52:Src/main.c    **** /* USER CODE BEGIN PV */
+  53:Src/main.c    **** char textTxBuffer[500];
+  54:Src/main.c    **** uint8_t rawMpu[14];
+  55:Src/main.c    **** /* USER CODE END PV */
+  56:Src/main.c    **** 
+  57:Src/main.c    **** /* Private function prototypes -----------------------------------------------*/
+  58:Src/main.c    **** void SystemClock_Config(void);
+  59:Src/main.c    **** /* USER CODE BEGIN PFP */
+  60:Src/main.c    **** 
+  61:Src/main.c    **** /* USER CODE END PFP */
+  62:Src/main.c    **** 
+  63:Src/main.c    **** /* Private user code ---------------------------------------------------------*/
+  64:Src/main.c    **** /* USER CODE BEGIN 0 */
+  65:Src/main.c    **** 
+  66:Src/main.c    **** /* USER CODE END 0 */
+  67:Src/main.c    **** 
+  68:Src/main.c    **** /**
+  69:Src/main.c    ****   * @brief  The application entry point.
+  70:Src/main.c    ****   * @retval int
+  71:Src/main.c    ****   */
+  72:Src/main.c    **** int main(void)
+  73:Src/main.c    **** {
+  74:Src/main.c    ****     /* USER CODE BEGIN 1 */
+  75:Src/main.c    ****     uint8_t mpuConfigTx, mpuConfigRx;
+  76:Src/main.c    ****     /* USER CODE END 1 */
+  77:Src/main.c    **** 
+  78:Src/main.c    **** 
+  79:Src/main.c    ****     /* MCU Configuration--------------------------------------------------------*/
+  80:Src/main.c    **** 
+  81:Src/main.c    ****     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  82:Src/main.c    ****     HAL_Init();
+  83:Src/main.c    **** 
+  84:Src/main.c    ****     /* USER CODE BEGIN Init */
+  85:Src/main.c    **** 
+  86:Src/main.c    ****     /* USER CODE END Init */
+  87:Src/main.c    **** 
+  88:Src/main.c    ****     /* Configure the system clock */
+  89:Src/main.c    ****     SystemClock_Config();
+  90:Src/main.c    **** 
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 3
+
+
+  91:Src/main.c    ****     /* USER CODE BEGIN SysInit */
+  92:Src/main.c    **** 
+  93:Src/main.c    ****     /* USER CODE END SysInit */
+  94:Src/main.c    **** 
+  95:Src/main.c    ****     /* Initialize all configured peripherals */
+  96:Src/main.c    ****     MX_GPIO_Init();
+  97:Src/main.c    ****     MX_CRC_Init();
+  98:Src/main.c    ****     MX_USB_DEVICE_Init();
+  99:Src/main.c    ****     MX_I2C1_Init();
+ 100:Src/main.c    ****     MX_USART1_UART_Init();
+ 101:Src/main.c    ****     MX_TIM3_Init();
+ 102:Src/main.c    ****     /* USER CODE BEGIN 2 */
+ 103:Src/main.c    **** 
+ 104:Src/main.c    ****     sprintf(textTxBuffer, "HRmonitor USART1 test\r");
+ 105:Src/main.c    ****     HAL_UART_Transmit(&huart1, (uint8_t *)textTxBuffer, strlen(textTxBuffer), 500);
+ 106:Src/main.c    **** 
+ 107:Src/main.c    ****     mpuConfigTx = 0b00000000;
+ 108:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x6B, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 109:Src/main.c    **** 
+ 110:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x75, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 111:Src/main.c    ****     // sprintf(txBuffer, "Slave Address: %x \r", mpuConfigRx);
+ 112:Src/main.c    ****     // HAL_UART_Transmit(&huart1, (uint8_t *)txBuffer, strlen(txBuffer), 500);
+ 113:Src/main.c    **** 
+ 114:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x1A, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 115:Src/main.c    ****     // sprintf(txBuffer, "FIFO config: %x \r", mpuConfigRx);
+ 116:Src/main.c    ****     // HAL_UART_Transmit(&huart1, (uint8_t *)txBuffer, strlen(txBuffer), 500);
+ 117:Src/main.c    **** 
+ 118:Src/main.c    ****     mpuConfigTx = 0b00001000;
+ 119:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x1B, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 120:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x1B, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 121:Src/main.c    ****     // sprintf(txBuffer, "Gyr cfig: %x \r", mpuConfigRx);
+ 122:Src/main.c    ****     // HAL_UART_Transmit(&huart1, (uint8_t *)txBuffer, strlen(txBuffer), 500);
+ 123:Src/main.c    **** 
+ 124:Src/main.c    ****     mpuConfigTx = 0b00011000;
+ 125:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x1C, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 126:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x1C, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 127:Src/main.c    ****     // sprintf(txBuffer, "Acc cfig: %x \r", mpuConfigRx);
+ 128:Src/main.c    ****     // HAL_UART_Transmit(&huart1, (uint8_t *)txBuffer, strlen(txBuffer), 500);
+ 129:Src/main.c    **** 
+ 130:Src/main.c    ****     HAL_TIM_Base_Start_IT(&htim3);
+ 131:Src/main.c    **** 
+ 132:Src/main.c    ****     /* USER CODE END 2 */
+ 133:Src/main.c    **** 
+ 134:Src/main.c    ****     /* Infinite loop */
+ 135:Src/main.c    ****     /* USER CODE BEGIN WHILE */
+ 136:Src/main.c    ****     while (1)
+ 137:Src/main.c    ****     {
+ 138:Src/main.c    **** 
+ 139:Src/main.c    ****         /* USER CODE END WHILE */
+ 140:Src/main.c    **** 
+ 141:Src/main.c    ****         /* USER CODE BEGIN 3 */
+ 142:Src/main.c    ****     }
+ 143:Src/main.c    ****     /* USER CODE END 3 */
+ 144:Src/main.c    **** }
+ 145:Src/main.c    **** 
+ 146:Src/main.c    **** /**
+ 147:Src/main.c    ****   * @brief System Clock Configuration
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 4
+
+
+ 148:Src/main.c    ****   * @retval None
+ 149:Src/main.c    ****   */
+ 150:Src/main.c    **** void SystemClock_Config(void)
+ 151:Src/main.c    **** {
+  26              		.loc 1 151 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 80
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 30B5     		push	{r4, r5, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 12
+  33              		.cfi_offset 4, -12
+  34              		.cfi_offset 5, -8
+  35              		.cfi_offset 14, -4
+  36 0002 95B0     		sub	sp, sp, #84
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 96
+ 152:Src/main.c    ****     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  39              		.loc 1 152 0
+  40 0004 0024     		movs	r4, #0
+  41 0006 0C94     		str	r4, [sp, #48]
+  42 0008 0D94     		str	r4, [sp, #52]
+  43 000a 0F94     		str	r4, [sp, #60]
+  44 000c 1094     		str	r4, [sp, #64]
+ 153:Src/main.c    ****     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  45              		.loc 1 153 0
+  46 000e 0594     		str	r4, [sp, #20]
+  47 0010 0694     		str	r4, [sp, #24]
+  48 0012 0794     		str	r4, [sp, #28]
+  49 0014 0894     		str	r4, [sp, #32]
+  50 0016 0994     		str	r4, [sp, #36]
+ 154:Src/main.c    ****     RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+  51              		.loc 1 154 0
+  52 0018 0194     		str	r4, [sp, #4]
+  53 001a 0294     		str	r4, [sp, #8]
+  54 001c 0394     		str	r4, [sp, #12]
+  55 001e 0494     		str	r4, [sp, #16]
+ 155:Src/main.c    **** 
+ 156:Src/main.c    ****     /** Initializes the CPU, AHB and APB busses clocks
+ 157:Src/main.c    ****     */
+ 158:Src/main.c    ****     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  56              		.loc 1 158 0
+  57 0020 0122     		movs	r2, #1
+  58 0022 0A92     		str	r2, [sp, #40]
+ 159:Src/main.c    ****     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  59              		.loc 1 159 0
+  60 0024 4FF48033 		mov	r3, #65536
+  61 0028 0B93     		str	r3, [sp, #44]
+ 160:Src/main.c    ****     RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+ 161:Src/main.c    ****     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  62              		.loc 1 161 0
+  63 002a 0E92     		str	r2, [sp, #56]
+ 162:Src/main.c    ****     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  64              		.loc 1 162 0
+  65 002c 0225     		movs	r5, #2
+  66 002e 1195     		str	r5, [sp, #68]
+ 163:Src/main.c    ****     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 5
+
+
+  67              		.loc 1 163 0
+  68 0030 1293     		str	r3, [sp, #72]
+ 164:Src/main.c    ****     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  69              		.loc 1 164 0
+  70 0032 4FF4E013 		mov	r3, #1835008
+  71 0036 1393     		str	r3, [sp, #76]
+ 165:Src/main.c    ****     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  72              		.loc 1 165 0
+  73 0038 0AA8     		add	r0, sp, #40
+  74 003a FFF7FEFF 		bl	HAL_RCC_OscConfig
+  75              	.LVL0:
+ 166:Src/main.c    ****     {
+ 167:Src/main.c    ****         Error_Handler();
+ 168:Src/main.c    ****     }
+ 169:Src/main.c    ****     /** Initializes the CPU, AHB and APB busses clocks
+ 170:Src/main.c    ****     */
+ 171:Src/main.c    ****     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+  76              		.loc 1 171 0
+  77 003e 0F23     		movs	r3, #15
+  78 0040 0593     		str	r3, [sp, #20]
+ 172:Src/main.c    ****                                   |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 173:Src/main.c    ****     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  79              		.loc 1 173 0
+  80 0042 0695     		str	r5, [sp, #24]
+ 174:Src/main.c    ****     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  81              		.loc 1 174 0
+  82 0044 0794     		str	r4, [sp, #28]
+ 175:Src/main.c    ****     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  83              		.loc 1 175 0
+  84 0046 4FF48063 		mov	r3, #1024
+  85 004a 0893     		str	r3, [sp, #32]
+ 176:Src/main.c    ****     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  86              		.loc 1 176 0
+  87 004c 0994     		str	r4, [sp, #36]
+ 177:Src/main.c    **** 
+ 178:Src/main.c    ****     if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  88              		.loc 1 178 0
+  89 004e 2946     		mov	r1, r5
+  90 0050 05A8     		add	r0, sp, #20
+  91 0052 FFF7FEFF 		bl	HAL_RCC_ClockConfig
+  92              	.LVL1:
+ 179:Src/main.c    ****     {
+ 180:Src/main.c    ****         Error_Handler();
+ 181:Src/main.c    ****     }
+ 182:Src/main.c    ****     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+  93              		.loc 1 182 0
+  94 0056 1023     		movs	r3, #16
+  95 0058 0193     		str	r3, [sp, #4]
+ 183:Src/main.c    ****     PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
+  96              		.loc 1 183 0
+  97 005a 0494     		str	r4, [sp, #16]
+ 184:Src/main.c    ****     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  98              		.loc 1 184 0
+  99 005c 01A8     		add	r0, sp, #4
+ 100 005e FFF7FEFF 		bl	HAL_RCCEx_PeriphCLKConfig
+ 101              	.LVL2:
+ 185:Src/main.c    ****     {
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 6
+
+
+ 186:Src/main.c    ****         Error_Handler();
+ 187:Src/main.c    ****     }
+ 188:Src/main.c    **** }
+ 102              		.loc 1 188 0
+ 103 0062 15B0     		add	sp, sp, #84
+ 104              	.LCFI2:
+ 105              		.cfi_def_cfa_offset 12
+ 106              		@ sp needed
+ 107 0064 30BD     		pop	{r4, r5, pc}
+ 108              		.cfi_endproc
+ 109              	.LFE67:
+ 111              		.section	.text.main,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	main
+ 114              		.syntax unified
+ 115              		.thumb
+ 116              		.thumb_func
+ 117              		.fpu softvfp
+ 119              	main:
+ 120              	.LFB66:
+  73:Src/main.c    ****     /* USER CODE BEGIN 1 */
+ 121              		.loc 1 73 0
+ 122              		.cfi_startproc
+ 123              		@ Volatile: function does not return.
+ 124              		@ args = 0, pretend = 0, frame = 8
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126 0000 80B5     		push	{r7, lr}
+ 127              	.LCFI3:
+ 128              		.cfi_def_cfa_offset 8
+ 129              		.cfi_offset 7, -8
+ 130              		.cfi_offset 14, -4
+ 131 0002 86B0     		sub	sp, sp, #24
+ 132              	.LCFI4:
+ 133              		.cfi_def_cfa_offset 32
+  82:Src/main.c    **** 
+ 134              		.loc 1 82 0
+ 135 0004 FFF7FEFF 		bl	HAL_Init
+ 136              	.LVL3:
+  89:Src/main.c    **** 
+ 137              		.loc 1 89 0
+ 138 0008 FFF7FEFF 		bl	SystemClock_Config
+ 139              	.LVL4:
+  96:Src/main.c    ****     MX_CRC_Init();
+ 140              		.loc 1 96 0
+ 141 000c FFF7FEFF 		bl	MX_GPIO_Init
+ 142              	.LVL5:
+  97:Src/main.c    ****     MX_USB_DEVICE_Init();
+ 143              		.loc 1 97 0
+ 144 0010 FFF7FEFF 		bl	MX_CRC_Init
+ 145              	.LVL6:
+  98:Src/main.c    ****     MX_I2C1_Init();
+ 146              		.loc 1 98 0
+ 147 0014 FFF7FEFF 		bl	MX_USB_DEVICE_Init
+ 148              	.LVL7:
+  99:Src/main.c    ****     MX_USART1_UART_Init();
+ 149              		.loc 1 99 0
+ 150 0018 FFF7FEFF 		bl	MX_I2C1_Init
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 7
+
+
+ 151              	.LVL8:
+ 100:Src/main.c    ****     MX_TIM3_Init();
+ 152              		.loc 1 100 0
+ 153 001c FFF7FEFF 		bl	MX_USART1_UART_Init
+ 154              	.LVL9:
+ 101:Src/main.c    ****     /* USER CODE BEGIN 2 */
+ 155              		.loc 1 101 0
+ 156 0020 FFF7FEFF 		bl	MX_TIM3_Init
+ 157              	.LVL10:
+ 104:Src/main.c    ****     HAL_UART_Transmit(&huart1, (uint8_t *)textTxBuffer, strlen(textTxBuffer), 500);
+ 158              		.loc 1 104 0
+ 159 0024 364C     		ldr	r4, .L6
+ 160 0026 374D     		ldr	r5, .L6+4
+ 161 0028 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 162 002a 2060     		str	r0, [r4]	@ unaligned
+ 163 002c 6160     		str	r1, [r4, #4]	@ unaligned
+ 164 002e A260     		str	r2, [r4, #8]	@ unaligned
+ 165 0030 E360     		str	r3, [r4, #12]	@ unaligned
+ 166 0032 2868     		ldr	r0, [r5]
+ 167 0034 2061     		str	r0, [r4, #16]	@ unaligned
+ 168 0036 AA88     		ldrh	r2, [r5, #4]	@ unaligned
+ 169 0038 AB79     		ldrb	r3, [r5, #6]	@ zero_extendqisi2
+ 170 003a A282     		strh	r2, [r4, #20]	@ unaligned
+ 171 003c A375     		strb	r3, [r4, #22]
+ 105:Src/main.c    **** 
+ 172              		.loc 1 105 0
+ 173 003e 2046     		mov	r0, r4
+ 174 0040 FFF7FEFF 		bl	strlen
+ 175              	.LVL11:
+ 176 0044 4FF4FA73 		mov	r3, #500
+ 177 0048 82B2     		uxth	r2, r0
+ 178 004a 2146     		mov	r1, r4
+ 179 004c 2E48     		ldr	r0, .L6+8
+ 180 004e FFF7FEFF 		bl	HAL_UART_Transmit
+ 181              	.LVL12:
+ 107:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x6B, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 182              		.loc 1 107 0
+ 183 0052 06AF     		add	r7, sp, #24
+ 184 0054 0023     		movs	r3, #0
+ 185 0056 07F8013D 		strb	r3, [r7, #-1]!
+ 108:Src/main.c    **** 
+ 186              		.loc 1 108 0
+ 187 005a 2C4D     		ldr	r5, .L6+12
+ 188 005c 6426     		movs	r6, #100
+ 189 005e 0296     		str	r6, [sp, #8]
+ 190 0060 0124     		movs	r4, #1
+ 191 0062 0194     		str	r4, [sp, #4]
+ 192 0064 0097     		str	r7, [sp]
+ 193 0066 2346     		mov	r3, r4
+ 194 0068 6B22     		movs	r2, #107
+ 195 006a D021     		movs	r1, #208
+ 196 006c 2846     		mov	r0, r5
+ 197 006e FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 198              	.LVL13:
+ 110:Src/main.c    ****     // sprintf(txBuffer, "Slave Address: %x \r", mpuConfigRx);
+ 199              		.loc 1 110 0
+ 200 0072 0296     		str	r6, [sp, #8]
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 8
+
+
+ 201 0074 0194     		str	r4, [sp, #4]
+ 202 0076 0DF11608 		add	r8, sp, #22
+ 203 007a CDF80080 		str	r8, [sp]
+ 204 007e 2346     		mov	r3, r4
+ 205 0080 7522     		movs	r2, #117
+ 206 0082 D021     		movs	r1, #208
+ 207 0084 2846     		mov	r0, r5
+ 208 0086 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 209              	.LVL14:
+ 114:Src/main.c    ****     // sprintf(txBuffer, "FIFO config: %x \r", mpuConfigRx);
+ 210              		.loc 1 114 0
+ 211 008a 0296     		str	r6, [sp, #8]
+ 212 008c 0194     		str	r4, [sp, #4]
+ 213 008e CDF80080 		str	r8, [sp]
+ 214 0092 2346     		mov	r3, r4
+ 215 0094 1A22     		movs	r2, #26
+ 216 0096 D021     		movs	r1, #208
+ 217 0098 2846     		mov	r0, r5
+ 218 009a FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 219              	.LVL15:
+ 118:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x1B, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 220              		.loc 1 118 0
+ 221 009e 0823     		movs	r3, #8
+ 222 00a0 8DF81730 		strb	r3, [sp, #23]
+ 119:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x1B, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 223              		.loc 1 119 0
+ 224 00a4 0296     		str	r6, [sp, #8]
+ 225 00a6 0194     		str	r4, [sp, #4]
+ 226 00a8 0097     		str	r7, [sp]
+ 227 00aa 2346     		mov	r3, r4
+ 228 00ac 1B22     		movs	r2, #27
+ 229 00ae D021     		movs	r1, #208
+ 230 00b0 2846     		mov	r0, r5
+ 231 00b2 FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 232              	.LVL16:
+ 120:Src/main.c    ****     // sprintf(txBuffer, "Gyr cfig: %x \r", mpuConfigRx);
+ 233              		.loc 1 120 0
+ 234 00b6 0296     		str	r6, [sp, #8]
+ 235 00b8 0194     		str	r4, [sp, #4]
+ 236 00ba CDF80080 		str	r8, [sp]
+ 237 00be 2346     		mov	r3, r4
+ 238 00c0 1B22     		movs	r2, #27
+ 239 00c2 D021     		movs	r1, #208
+ 240 00c4 2846     		mov	r0, r5
+ 241 00c6 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 242              	.LVL17:
+ 124:Src/main.c    ****     HAL_I2C_Mem_Write(&hi2c1, 0xD0, 0x1C, I2C_MEMADD_SIZE_8BIT, &mpuConfigTx, 1, 100);
+ 243              		.loc 1 124 0
+ 244 00ca 1823     		movs	r3, #24
+ 245 00cc 8DF81730 		strb	r3, [sp, #23]
+ 125:Src/main.c    ****     HAL_I2C_Mem_Read(&hi2c1, 0xD0, 0x1C, I2C_MEMADD_SIZE_8BIT, &mpuConfigRx, 1, 100);
+ 246              		.loc 1 125 0
+ 247 00d0 0296     		str	r6, [sp, #8]
+ 248 00d2 0194     		str	r4, [sp, #4]
+ 249 00d4 0097     		str	r7, [sp]
+ 250 00d6 2346     		mov	r3, r4
+ 251 00d8 1C22     		movs	r2, #28
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 9
+
+
+ 252 00da D021     		movs	r1, #208
+ 253 00dc 2846     		mov	r0, r5
+ 254 00de FFF7FEFF 		bl	HAL_I2C_Mem_Write
+ 255              	.LVL18:
+ 126:Src/main.c    ****     // sprintf(txBuffer, "Acc cfig: %x \r", mpuConfigRx);
+ 256              		.loc 1 126 0
+ 257 00e2 0296     		str	r6, [sp, #8]
+ 258 00e4 0194     		str	r4, [sp, #4]
+ 259 00e6 CDF80080 		str	r8, [sp]
+ 260 00ea 2346     		mov	r3, r4
+ 261 00ec 1C22     		movs	r2, #28
+ 262 00ee D021     		movs	r1, #208
+ 263 00f0 2846     		mov	r0, r5
+ 264 00f2 FFF7FEFF 		bl	HAL_I2C_Mem_Read
+ 265              	.LVL19:
+ 130:Src/main.c    **** 
+ 266              		.loc 1 130 0
+ 267 00f6 0648     		ldr	r0, .L6+16
+ 268 00f8 FFF7FEFF 		bl	HAL_TIM_Base_Start_IT
+ 269              	.LVL20:
+ 270              	.L4:
+ 271 00fc FEE7     		b	.L4
+ 272              	.L7:
+ 273 00fe 00BF     		.align	2
+ 274              	.L6:
+ 275 0100 00000000 		.word	textTxBuffer
+ 276 0104 00000000 		.word	.LC0
+ 277 0108 00000000 		.word	huart1
+ 278 010c 00000000 		.word	hi2c1
+ 279 0110 00000000 		.word	htim3
+ 280              		.cfi_endproc
+ 281              	.LFE66:
+ 283              		.section	.text.HAL_TIM_PeriodElapsedCallback,"ax",%progbits
+ 284              		.align	1
+ 285              		.global	HAL_TIM_PeriodElapsedCallback
+ 286              		.syntax unified
+ 287              		.thumb
+ 288              		.thumb_func
+ 289              		.fpu softvfp
+ 291              	HAL_TIM_PeriodElapsedCallback:
+ 292              	.LFB68:
+ 189:Src/main.c    **** 
+ 190:Src/main.c    **** /* USER CODE BEGIN 4 */
+ 191:Src/main.c    **** void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+ 192:Src/main.c    **** {
+ 293              		.loc 1 192 0
+ 294              		.cfi_startproc
+ 295              		@ args = 0, pretend = 0, frame = 0
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 297              	.LVL21:
+ 298 0000 00B5     		push	{lr}
+ 299              	.LCFI5:
+ 300              		.cfi_def_cfa_offset 4
+ 301              		.cfi_offset 14, -4
+ 302 0002 83B0     		sub	sp, sp, #12
+ 303              	.LCFI6:
+ 304              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 10
+
+
+ 193:Src/main.c    ****     HAL_I2C_Mem_Read_IT(&hi2c1, 0xD0, 0x3B, I2C_MEMADD_SIZE_8BIT, rawMpu, 2);
+ 305              		.loc 1 193 0
+ 306 0004 0223     		movs	r3, #2
+ 307 0006 0193     		str	r3, [sp, #4]
+ 308 0008 054B     		ldr	r3, .L10
+ 309 000a 0093     		str	r3, [sp]
+ 310 000c 0123     		movs	r3, #1
+ 311 000e 3B22     		movs	r2, #59
+ 312 0010 D021     		movs	r1, #208
+ 313 0012 0448     		ldr	r0, .L10+4
+ 314              	.LVL22:
+ 315 0014 FFF7FEFF 		bl	HAL_I2C_Mem_Read_IT
+ 316              	.LVL23:
+ 194:Src/main.c    ****     // static uint32_t i;
+ 195:Src/main.c    ****     // if (i==10) {
+ 196:Src/main.c    ****     //     HAL_I2C_Mem_Read_IT(&hi2c1, 0xD0, 0x3B, I2C_MEMADD_SIZE_8BIT, rawMpu, 14);
+ 197:Src/main.c    **** 
+ 198:Src/main.c    ****     //     // static uint32_t n;
+ 199:Src/main.c    ****     //     // n++;
+ 200:Src/main.c    ****     //     // sprintf(textTxBuffer, "%05d\r\n", n);
+ 201:Src/main.c    ****     //     // HAL_UART_Transmit(&huart1, (uint8_t *)textTxBuffer, strlen(textTxBuffer), 500);
+ 202:Src/main.c    ****     //     i=0;
+ 203:Src/main.c    ****     // }
+ 204:Src/main.c    ****     // i++;
+ 205:Src/main.c    **** }
+ 317              		.loc 1 205 0
+ 318 0018 03B0     		add	sp, sp, #12
+ 319              	.LCFI7:
+ 320              		.cfi_def_cfa_offset 4
+ 321              		@ sp needed
+ 322 001a 5DF804FB 		ldr	pc, [sp], #4
+ 323              	.L11:
+ 324 001e 00BF     		.align	2
+ 325              	.L10:
+ 326 0020 00000000 		.word	rawMpu
+ 327 0024 00000000 		.word	hi2c1
+ 328              		.cfi_endproc
+ 329              	.LFE68:
+ 331              		.section	.text.HAL_I2C_MemRxCpltCallback,"ax",%progbits
+ 332              		.align	1
+ 333              		.global	HAL_I2C_MemRxCpltCallback
+ 334              		.syntax unified
+ 335              		.thumb
+ 336              		.thumb_func
+ 337              		.fpu softvfp
+ 339              	HAL_I2C_MemRxCpltCallback:
+ 340              	.LFB69:
+ 206:Src/main.c    **** 
+ 207:Src/main.c    **** void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
+ 208:Src/main.c    **** {
+ 341              		.loc 1 208 0
+ 342              		.cfi_startproc
+ 343              		@ args = 0, pretend = 0, frame = 0
+ 344              		@ frame_needed = 0, uses_anonymous_args = 0
+ 345              	.LVL24:
+ 346 0000 10B5     		push	{r4, lr}
+ 347              	.LCFI8:
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 11
+
+
+ 348              		.cfi_def_cfa_offset 8
+ 349              		.cfi_offset 4, -8
+ 350              		.cfi_offset 14, -4
+ 209:Src/main.c    ****     // static uint32_t seconds, millis;
+ 210:Src/main.c    **** 
+ 211:Src/main.c    ****     // millis = millis + 5;
+ 212:Src/main.c    ****     // if(millis == 1000) {
+ 213:Src/main.c    ****     //     millis =0;
+ 214:Src/main.c    ****     //     seconds++;
+ 215:Src/main.c    ****     // }
+ 216:Src/main.c    **** 
+ 217:Src/main.c    ****     uint32_t xAcc = (rawMpu[0] << 8) | (0x00F0 & rawMpu[1]);
+ 351              		.loc 1 217 0
+ 352 0002 144B     		ldr	r3, .L16
+ 353 0004 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 354 0006 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 355 0008 03F0F003 		and	r3, r3, #240
+ 356              	.LVL25:
+ 218:Src/main.c    ****     // uint32_t yAcc = (rawMpu[2] << 8) | (0x00F0 & rawMpu[3]);
+ 219:Src/main.c    ****     // uint32_t zAcc = (rawMpu[4] << 8) | (0x00F0 & rawMpu[5]);
+ 220:Src/main.c    ****     // uint32_t xGyr = (rawMpu[8] << 8) | (0x00FF & rawMpu[9]);
+ 221:Src/main.c    ****     // uint32_t yGyr = (rawMpu[10] << 8) | (0x00FF & rawMpu[11]);
+ 222:Src/main.c    ****     // uint32_t zGyr = (rawMpu[12] << 8) | (0x00FF & rawMpu[13]);
+ 223:Src/main.c    **** 
+ 224:Src/main.c    ****     sprintf(textTxBuffer, "%06hd\r", xAcc);
+ 357              		.loc 1 224 0
+ 358 000c 124C     		ldr	r4, .L16+4
+ 359 000e 43EA0222 		orr	r2, r3, r2, lsl #8
+ 360              	.LVL26:
+ 361 0012 1249     		ldr	r1, .L16+8
+ 362 0014 2046     		mov	r0, r4
+ 363              	.LVL27:
+ 364 0016 FFF7FEFF 		bl	sprintf
+ 365              	.LVL28:
+ 225:Src/main.c    ****     HAL_UART_Transmit(&huart1, (uint8_t *)textTxBuffer, strlen(textTxBuffer), 500);
+ 366              		.loc 1 225 0
+ 367 001a 2046     		mov	r0, r4
+ 368 001c FFF7FEFF 		bl	strlen
+ 369              	.LVL29:
+ 370 0020 4FF4FA73 		mov	r3, #500
+ 371 0024 82B2     		uxth	r2, r0
+ 372 0026 2146     		mov	r1, r4
+ 373 0028 0D48     		ldr	r0, .L16+12
+ 374 002a FFF7FEFF 		bl	HAL_UART_Transmit
+ 375              	.LVL30:
+ 226:Src/main.c    ****     static uint8_t count;
+ 227:Src/main.c    ****     if (count == 100) {
+ 376              		.loc 1 227 0
+ 377 002e 0D4B     		ldr	r3, .L16+16
+ 378 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 379 0032 642B     		cmp	r3, #100
+ 380 0034 04D0     		beq	.L15
+ 381              	.L13:
+ 228:Src/main.c    ****         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+ 229:Src/main.c    ****         count=0;
+ 230:Src/main.c    ****     }
+ 231:Src/main.c    ****     count++;
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 12
+
+
+ 382              		.loc 1 231 0
+ 383 0036 0B4A     		ldr	r2, .L16+16
+ 384 0038 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 385 003a 0133     		adds	r3, r3, #1
+ 386 003c 1370     		strb	r3, [r2]
+ 232:Src/main.c    **** }
+ 387              		.loc 1 232 0
+ 388 003e 10BD     		pop	{r4, pc}
+ 389              	.L15:
+ 228:Src/main.c    ****         HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+ 390              		.loc 1 228 0
+ 391 0040 4FF40051 		mov	r1, #8192
+ 392 0044 0848     		ldr	r0, .L16+20
+ 393 0046 FFF7FEFF 		bl	HAL_GPIO_TogglePin
+ 394              	.LVL31:
+ 229:Src/main.c    ****     }
+ 395              		.loc 1 229 0
+ 396 004a 064B     		ldr	r3, .L16+16
+ 397 004c 0022     		movs	r2, #0
+ 398 004e 1A70     		strb	r2, [r3]
+ 399 0050 F1E7     		b	.L13
+ 400              	.L17:
+ 401 0052 00BF     		.align	2
+ 402              	.L16:
+ 403 0054 00000000 		.word	rawMpu
+ 404 0058 00000000 		.word	textTxBuffer
+ 405 005c 00000000 		.word	.LC1
+ 406 0060 00000000 		.word	huart1
+ 407 0064 00000000 		.word	.LANCHOR0
+ 408 0068 00100140 		.word	1073811456
+ 409              		.cfi_endproc
+ 410              	.LFE69:
+ 412              		.section	.text.Error_Handler,"ax",%progbits
+ 413              		.align	1
+ 414              		.global	Error_Handler
+ 415              		.syntax unified
+ 416              		.thumb
+ 417              		.thumb_func
+ 418              		.fpu softvfp
+ 420              	Error_Handler:
+ 421              	.LFB70:
+ 233:Src/main.c    **** 
+ 234:Src/main.c    **** /* USER CODE END 4 */
+ 235:Src/main.c    **** 
+ 236:Src/main.c    **** /**
+ 237:Src/main.c    ****   * @brief  This function is executed in case of error occurrence.
+ 238:Src/main.c    ****   * @retval None
+ 239:Src/main.c    ****   */
+ 240:Src/main.c    **** void Error_Handler(void)
+ 241:Src/main.c    **** {
+ 422              		.loc 1 241 0
+ 423              		.cfi_startproc
+ 424              		@ args = 0, pretend = 0, frame = 0
+ 425              		@ frame_needed = 0, uses_anonymous_args = 0
+ 426              		@ link register save eliminated.
+ 242:Src/main.c    ****     /* USER CODE BEGIN Error_Handler_Debug */
+ 243:Src/main.c    ****     /* User can add his own implementation to report the HAL error return state */
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 13
+
+
+ 244:Src/main.c    **** 
+ 245:Src/main.c    ****     /* USER CODE END Error_Handler_Debug */
+ 246:Src/main.c    **** }
+ 427              		.loc 1 246 0
+ 428 0000 7047     		bx	lr
+ 429              		.cfi_endproc
+ 430              	.LFE70:
+ 432              		.comm	rawMpu,14,4
+ 433              		.comm	textTxBuffer,500,4
+ 434              		.section	.bss.count.8208,"aw",%nobits
+ 435              		.set	.LANCHOR0,. + 0
+ 438              	count.8208:
+ 439 0000 00       		.space	1
+ 440              		.section	.rodata.HAL_I2C_MemRxCpltCallback.str1.4,"aMS",%progbits,1
+ 441              		.align	2
+ 442              	.LC1:
+ 443 0000 25303668 		.ascii	"%06hd\015\000"
+ 443      640D00
+ 444              		.section	.rodata.main.str1.4,"aMS",%progbits,1
+ 445              		.align	2
+ 446              	.LC0:
+ 447 0000 48526D6F 		.ascii	"HRmonitor USART1 test\015\000"
+ 447      6E69746F 
+ 447      72205553 
+ 447      41525431 
+ 447      20746573 
+ 448              		.text
+ 449              	.Letext0:
+ 450              		.file 2 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\arm
+ 451              		.file 3 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\arm
+ 452              		.file 4 "Drivers/CMSIS/Include/core_cm3.h"
+ 453              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 454              		.file 6 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 455              		.file 7 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\arm
+ 456              		.file 8 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\arm
+ 457              		.file 9 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\lib
+ 458              		.file 10 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\ar
+ 459              		.file 11 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 460              		.file 12 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h"
+ 461              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h"
+ 462              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 463              		.file 15 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_crc.h"
+ 464              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h"
+ 465              		.file 17 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 466              		.file 18 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 467              		.file 19 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 468              		.file 20 "Inc/crc.h"
+ 469              		.file 21 "Inc/i2c.h"
+ 470              		.file 22 "Inc/tim.h"
+ 471              		.file 23 "Inc/usart.h"
+ 472              		.file 24 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\ar
+ 473              		.file 25 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\ar
+ 474              		.file 26 "c:\\program files (x86)\\embedded toolchain\\gnu tools arm embedded\\7 2017-q4-major\\ar
+ 475              		.file 27 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 476              		.file 28 "Inc/gpio.h"
+ 477              		.file 29 "Inc/usb_device.h"
+ARM GAS  C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:16     .text.SystemClock_Config:00000000 $t
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:23     .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:112    .text.main:00000000 $t
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:119    .text.main:00000000 main
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:275    .text.main:00000100 $d
+                            *COM*:000001f4 textTxBuffer
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:284    .text.HAL_TIM_PeriodElapsedCallback:00000000 $t
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:291    .text.HAL_TIM_PeriodElapsedCallback:00000000 HAL_TIM_PeriodElapsedCallback
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:326    .text.HAL_TIM_PeriodElapsedCallback:00000020 $d
+                            *COM*:0000000e rawMpu
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:332    .text.HAL_I2C_MemRxCpltCallback:00000000 $t
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:339    .text.HAL_I2C_MemRxCpltCallback:00000000 HAL_I2C_MemRxCpltCallback
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:403    .text.HAL_I2C_MemRxCpltCallback:00000054 $d
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:413    .text.Error_Handler:00000000 $t
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:420    .text.Error_Handler:00000000 Error_Handler
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:438    .bss.count.8208:00000000 count.8208
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:439    .bss.count.8208:00000000 $d
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:441    .rodata.HAL_I2C_MemRxCpltCallback.str1.4:00000000 $d
+C:\Users\Patrick\AppData\Local\Temp\ccr4SU3J.s:445    .rodata.main.str1.4:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_RCCEx_PeriphCLKConfig
+HAL_Init
+MX_GPIO_Init
+MX_CRC_Init
+MX_USB_DEVICE_Init
+MX_I2C1_Init
+MX_USART1_UART_Init
+MX_TIM3_Init
+strlen
+HAL_UART_Transmit
+HAL_I2C_Mem_Write
+HAL_I2C_Mem_Read
+HAL_TIM_Base_Start_IT
+huart1
+hi2c1
+htim3
+HAL_I2C_Mem_Read_IT
+sprintf
+HAL_GPIO_TogglePin
